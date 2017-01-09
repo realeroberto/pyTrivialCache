@@ -2,7 +2,7 @@
 
 # The MIT License (MIT)
 #
-# Copyright (c) 2014-5 Roberto Reale <roberto.reale82@gmail.com>
+# Copyright (c) 2014-7 Roberto Reale <roberto.reale82@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,15 +22,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__author__ = "Roberto Reale"
-__version__ = "0.1.0"
 
-
-from ConfigParser import ConfigParser
 import os
 import re
-import logging
-import logging.config
+import cmd
+import getopt
+import sys
+import shutil
 
 
 class pyTrivialCacheException(Exception):
@@ -41,43 +39,11 @@ class pyTrivialCacheLockException(pyTrivialCacheException):
     pass
 
 
-class pyTrivialCacheConfig(ConfigParser):
+class pyTrivialCache(object):
 
-    @property
-    def name(self):
-        return self._name
-
-    @property
-    def logger(self):
-        return self.get(self._section, 'logger')
-
-    @property
-    def basedir(self):
-        return self.get(self._section, 'basedir')
-
-    @property
-    def lock_dir(self):
-        return os.path.join(self.basedir, '.lock_dir')
-
-    @property
-    def filter(self):
-        return self.get(self._section, 'filter')
-
-    @property
-    def filter_pattern(self):
-        return re.compile(self.filter)
-
-    def __init__(self, config_file, trivial_cache_name='trivial_cache'):
-        ConfigParser.__init__(self)
-        self.read(config_file)
-        self._name = trivial_cache_name
-        self._section = trivial_cache_name
-
-    def __del__(self):
-        pass
-
-
-class pyTrivialCache(pyTrivialCacheConfig):
+    def _log(self, priority, msg):
+        # priority is ignored
+        print msg
 
     def lock(self):
         if not self.connected:
@@ -104,7 +70,7 @@ class pyTrivialCache(pyTrivialCacheConfig):
             self.log(10, "Already disconnected from %s." % self.name)
 
     def _filename2path(self, filename):
-        match = self.filter_pattern.match(filename)
+        match = self.pattern_compiled.match(filename)
         if match:
             intermediate = list(match.groups())
             return os.path.join(self.basedir, *intermediate)
@@ -129,7 +95,7 @@ class pyTrivialCache(pyTrivialCacheConfig):
             os.makedirs(target_path)
         except:
             pass
-        return os.path.join(target_path, filename)
+        shutil.copyfile(filename, os.path.join(target_path, filename))
 
     def unpush(self, filename):
         self.log(20, "Unpushing %s from %s." % (filename, self.name))
@@ -157,15 +123,124 @@ class pyTrivialCache(pyTrivialCacheConfig):
         for filename in self.traverse():
             self.unpush(filename)
 
-    def __init__(self, config_file, trivial_cache_name='trivial_cache'):
+    def __init__(self, name, basedir, pattern=None, log=None):
+        # read options
+        self.name = name
+        self.basedir = basedir
+        if not pattern:
+            self.pattern = ".*"
+        else:
+            self.pattern = pattern
+        if not log:
+            self.log = self._log
+        else:
+            self.log = log
         # set defaults
         self.connected = False
-        # parse config file
-        pyTrivialCacheConfig.__init__(self, config_file, trivial_cache_name)
-        # initialize and start logging
-        logging.config.fileConfig(config_file)
-        self.logger_logger = logging.getLogger(self.logger)
-        self.log = self.logger_logger.log
+        self.lock_dir = os.path.join(self.basedir, '.lock_dir')
+        self.pattern_compiled = re.compile(self.pattern)
 
     def __del__(self):
         pass
+
+
+class pyTrivialCacheShell(cmd.Cmd, pyTrivialCache):
+    intro = 'Welcome to the pyTrivialCache shell.  Type help or ? to list commands.\n'
+    prompt = '(pyTrivialCache) '
+
+    def do_lock(self, arg):
+        'Acquire a lock'
+        self.lock()
+    def do_unlock(self, arg):
+        'Release a lock'
+        self.unlock()
+    def do_exists(self, filename):
+        'Tell if a file exists: EXISTS FILENAME'
+        if filename:
+            print self.exists(filename)
+    def do_push(self, filename):
+        'Push a file unto the cache: PUSH FILENAME'
+        self.push(filename)
+    def do_unpush(self, filename):
+        'Unpush a file from the cache: UNPUSH FILENAME'
+        self.unpush(filename)
+    def do_list(self, arg):
+        'List the contents of the cache: LIST'
+        for filename in self.traverse(sorter=lambda x: x):
+            print filename
+    def do_purge(self, arg):
+        'Purge the contents of the cache: LIST'
+        self.purge()
+    def do_quit(self, arg):
+        'Exit'
+        self.unlock()
+        return True
+
+    def __init__(self, name, basedir, pattern=None, log=None):
+	cmd.Cmd.__init__(self)
+        pyTrivialCache.__init__(self, name, basedir, pattern, log)
+
+    def __del__(self):
+        pass
+
+
+
+def short_usage():
+    print >>sys.stderr, """Usage:
+    pyTrivialCache -n NAME -b BASEDIR [ -p PATTERN ]
+Try `pyTrivialCache --help' for more information."""
+
+
+def full_usage():
+    print >>sys.stderr, """Usage:
+    pyTrivialCache -n NAME -b BASEDIR [ -p PATTERN ]
+The poor man's API for manipulating a file system cache.
+      --help                       display this help and exit
+  -n, --name          NAME         name of the cache
+  -b, --basedir       BASEDIR      base directory of the cache
+  -p, --pattern       PATTERN      apply a patter match"""
+
+
+def main(argv):
+    try:
+        opts, args = getopt.getopt(argv, "hn:b:p:",
+                                   ["help", "name=", "basedir=", "pattern=", ])
+    except getopt.GetoptError, err:
+        print >>sys.stderr, err
+        short_usage()
+        sys.exit(2)
+
+    name = None
+    basedir = None
+    pattern = None
+
+    for opt, arg in opts:
+        if opt in ("-h", "--help"):
+            full_usage()
+            sys.exit()
+        elif opt in ("-n", "--name"):
+            name = arg
+        elif opt in ("-n", "--basedir"):
+            basedir = arg
+        elif opt in ("-p", "--pattern"):
+            pattern = arg
+
+    # pre-flights sanity checks
+    if not name:
+        print >>sys.stderr, "Cache name not specified!\n"\
+            "A used-defined name can be specified via the --name switch."
+        sys.exit(2)
+    if not basedir:
+        print >>sys.stderr, "Cache basedir not specified!\n"\
+            "A used-defined basedir can be specified via the --basedir switch."
+        sys.exit(2)
+
+    # connect to the cache shell
+    pyTrivialCacheShell(name, basedir, pattern).cmdloop()
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
+
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
