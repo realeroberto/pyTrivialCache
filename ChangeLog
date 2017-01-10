@@ -2,7 +2,7 @@
 
 	* setup.py: Removed useless install_requires.  Updated package url and
 	author's email.
-	* LICENSE: Update copyright notice.
+	* LICENSE: Updated copyright notice.
 	* ChangeLog: Updated author's email.
 
 2017-01-09  Roberto Reale  <roberto.reale@linux.com>
