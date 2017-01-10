@@ -7,7 +7,7 @@ setup(
     py_modules = [ 'pyTrivialCache' ],
     author = 'Roberto Reale',
     author_email = 'roberto.reale82@gmail.com',
-    url = 'https://github.com/roberto-reale/pyTrivialCache',
+    url = 'https://github.com/robertoreale/pyTrivialCache',
     keywords = [ 'filesystem', 'cache' ],
     install_requires = [ 
     ]
