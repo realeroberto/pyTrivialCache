@@ -1,6 +1,7 @@
 2017-01-10  Roberto Reale  <roberto.reale82@gmail.com>
 
 	* setup.py: Removed useless install_requires.
+	* LICENSE: Update copyright notice.
 
 2017-01-09  Roberto Reale  <roberto.reale82@gmail.com>
 
