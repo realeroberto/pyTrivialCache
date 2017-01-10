@@ -1,5 +1,6 @@
 2017-01-10  Roberto Reale  <roberto.reale@linux.com>
 
+	* pyTrivialCache.py: Removed author's email.
 	* setup.py: Removed useless install_requires.  Updated package url and
 	author's email.
 	* LICENSE: Updated copyright notice.
