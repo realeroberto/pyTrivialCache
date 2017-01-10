@@ -10,8 +10,5 @@ setup(
     url = 'https://github.com/roberto-reale/pyTrivialCache',
     keywords = [ 'filesystem', 'cache' ],
     install_requires = [ 
-    'logging',
-    'logging.config',
-    'ConfigParser'
     ]
 )
