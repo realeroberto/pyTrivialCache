@@ -2,7 +2,7 @@
 
 	* pyTrivialCache.py: Removed author's email.
 	* setup.py: Removed useless install_requires.  Updated package url and
-	author's email.
+	author's email.  Bumped version to 0.2.0.
 	* LICENSE: Updated copyright notice.
 	* ChangeLog: Updated author's email.
 

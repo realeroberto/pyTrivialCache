@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name = 'pyTrivialCache',
-    version = '0.1.0',
+    version = '0.2.0',
     description = "The poor man's API for manipulating a file system cache."
     py_modules = [ 'pyTrivialCache' ],
     author = 'Roberto Reale',
