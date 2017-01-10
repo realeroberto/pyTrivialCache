@@ -6,7 +6,7 @@ setup(
     description = "The poor man's API for manipulating a file system cache."
     py_modules = [ 'pyTrivialCache' ],
     author = 'Roberto Reale',
-    author_email = 'roberto.reale82@gmail.com',
+    author_email = 'roberto.reale@linux.com',
     url = 'https://github.com/robertoreale/pyTrivialCache',
     keywords = [ 'filesystem', 'cache' ],
     install_requires = [ 
