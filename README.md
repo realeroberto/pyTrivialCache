@@ -74,3 +74,17 @@ As a module:
         > Unpushing b from PVAK4UE0.
         cache.traverse()
         > []
+
+### Tests
+
+To run the test suite, the following environment variables should be defined; in addition, the `PYTRIVIALCACHE_WD` folder should contain at least three objects, namely, `a`, `b`, and `c`:
+
+* `PYTRIVIALCACHE_BASEDIR`
+* `PYTRIVIALCACHE_WD`
+
+For example,
+
+        $ export PYTRIVIALCACHE_BASEDIR=$(mktemp -d)
+        $ export PYTRIVIALCACHE_WD=$(mktemp -d)
+        $ touch $PYTRIVIALCACHE_WD/{a,b,c}
+        $ python setup.py test
