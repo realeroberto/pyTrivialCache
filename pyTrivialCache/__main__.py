@@ -31,17 +31,17 @@ from pyTrivialCache import pyTrivialCacheShell
 
 def short_usage():
     print >>sys.stderr, """Usage:
-    pyTrivialCache -n NAME -b BASEDIR [ -p PATTERN ]
+    pyTrivialCache -b BASEDIR [ -n NAME ] [ -p PATTERN ]
 Try `pyTrivialCache --help' for more information."""
 
 
 def full_usage():
     print >>sys.stderr, """Usage:
-    pyTrivialCache -n NAME -b BASEDIR [ -p PATTERN ]
+    pyTrivialCache -b BASEDIR [ -n NAME ] [ -p PATTERN ]
 The poor man's API for manipulating a file system cache.
       --help                       display this help and exit
-  -n, --name          NAME         name of the cache
   -b, --basedir       BASEDIR      base directory of the cache
+  -n, --name          NAME         name of the cache
   -p, --pattern       PATTERN      apply a pattern match"""
 
 
@@ -50,8 +50,8 @@ def main(argv=None):
         argv = sys.argv[1:]
 
     try:
-        opts, args = getopt.getopt(argv, "hn:b:p:",
-                                   ["help", "name=", "basedir=", "pattern=", ])
+        opts, args = getopt.getopt(argv, "hb:n:p:",
+                                   ["help", "basedir=", "name=", "pattern=", ])
     except getopt.GetoptError, err:
         print >>sys.stderr, err
         short_usage()
@@ -65,25 +65,21 @@ def main(argv=None):
         if opt in ("-h", "--help"):
             full_usage()
             sys.exit()
+        elif opt in ("-b", "--basedir"):
+            basedir = arg
         elif opt in ("-n", "--name"):
             name = arg
-        elif opt in ("-n", "--basedir"):
-            basedir = arg
         elif opt in ("-p", "--pattern"):
             pattern = arg
 
     # pre-flights sanity checks
-    if not name:
-        print >>sys.stderr, "Cache name not specified!\n"\
-            "A used-defined name can be specified via the --name switch."
-        sys.exit(2)
     if not basedir:
         print >>sys.stderr, "Cache basedir not specified!\n"\
             "A used-defined basedir can be specified via the --basedir switch."
         sys.exit(2)
 
     # connect to the cache shell
-    pyTrivialCacheShell(name, basedir, pattern).cmdloop()
+    pyTrivialCacheShell(basedir, name, pattern).cmdloop()
 
 
 if __name__ == "__main__":

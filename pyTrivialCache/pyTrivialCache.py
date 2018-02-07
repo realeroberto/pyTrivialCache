@@ -27,7 +27,9 @@ import os
 import re
 import cmd
 import sys
+import random
 import shutil
+import string
 
 
 class pyTrivialCacheException(Exception):
@@ -43,6 +45,10 @@ class pyTrivialCache(object):
     def _log(self, priority, msg):
         # priority is ignored
         print msg
+
+    def _get_random_string(self, size=8, chars=string.ascii_uppercase + string.digits):
+        # https://stackoverflow.com/questions/2257441/
+        return ''.join(random.choice(chars) for _ in range(size))
 
     def lock(self):
         if not self.connected:
@@ -119,7 +125,10 @@ class pyTrivialCache(object):
         for filename in self.traverse():
             self.unpush(filename)
 
-    def __init__(self, name, basedir, pattern=None, log=None):
+    def __init__(self, basedir, name=None, pattern=None, log=None):
+        if not name:
+            name = self._get_random_string()
+
         # read options
         self.name = name
         self.basedir = basedir
