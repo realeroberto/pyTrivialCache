@@ -151,7 +151,6 @@ class pyTrivialCache(object):
 
 class pyTrivialCacheShell(cmd.Cmd, pyTrivialCache):
     intro = 'Welcome to the pyTrivialCache shell.  Type help or ? to list commands.\n'
-    prompt = '(pyTrivialCache) '
 
     def do_lock(self, arg):
         'Acquire a lock'
@@ -184,6 +183,7 @@ class pyTrivialCacheShell(cmd.Cmd, pyTrivialCache):
     def __init__(self, name, basedir, pattern=None, log=None):
 	cmd.Cmd.__init__(self)
         pyTrivialCache.__init__(self, name, basedir, pattern, log)
+        self.prompt = '(pyTrivialCache:{}) '.format(self.name)
 
     def __del__(self):
         pass
