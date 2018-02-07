@@ -26,7 +26,6 @@
 import os
 import re
 import cmd
-import getopt
 import sys
 import shutil
 
@@ -183,64 +182,6 @@ class pyTrivialCacheShell(cmd.Cmd, pyTrivialCache):
     def __del__(self):
         pass
 
-
-
-def short_usage():
-    print >>sys.stderr, """Usage:
-    pyTrivialCache -n NAME -b BASEDIR [ -p PATTERN ]
-Try `pyTrivialCache --help' for more information."""
-
-
-def full_usage():
-    print >>sys.stderr, """Usage:
-    pyTrivialCache -n NAME -b BASEDIR [ -p PATTERN ]
-The poor man's API for manipulating a file system cache.
-      --help                       display this help and exit
-  -n, --name          NAME         name of the cache
-  -b, --basedir       BASEDIR      base directory of the cache
-  -p, --pattern       PATTERN      apply a patter match"""
-
-
-def main(argv):
-    try:
-        opts, args = getopt.getopt(argv, "hn:b:p:",
-                                   ["help", "name=", "basedir=", "pattern=", ])
-    except getopt.GetoptError, err:
-        print >>sys.stderr, err
-        short_usage()
-        sys.exit(2)
-
-    name = None
-    basedir = None
-    pattern = None
-
-    for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            full_usage()
-            sys.exit()
-        elif opt in ("-n", "--name"):
-            name = arg
-        elif opt in ("-n", "--basedir"):
-            basedir = arg
-        elif opt in ("-p", "--pattern"):
-            pattern = arg
-
-    # pre-flights sanity checks
-    if not name:
-        print >>sys.stderr, "Cache name not specified!\n"\
-            "A used-defined name can be specified via the --name switch."
-        sys.exit(2)
-    if not basedir:
-        print >>sys.stderr, "Cache basedir not specified!\n"\
-            "A used-defined basedir can be specified via the --basedir switch."
-        sys.exit(2)
-
-    # connect to the cache shell
-    pyTrivialCacheShell(name, basedir, pattern).cmdloop()
-
-
-if __name__ == "__main__":
-    main(sys.argv[1:])
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

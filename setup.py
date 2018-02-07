@@ -4,11 +4,19 @@ setup(
     name = 'pyTrivialCache',
     version = '0.2.0',
     description = "The poor man's API for manipulating a file system cache.",
-    py_modules = [ 'pyTrivialCache' ],
+    packages = [ 'pyTrivialCache' ],
     author = 'Roberto Reale',
-    author_email = 'roberto.reale@linux.com',
+    author_email = 'rober.reale@gmail.com',
     url = 'https://github.com/robertoreale/pyTrivialCache',
     keywords = [ 'filesystem', 'cache' ],
-    install_requires = [ 
-    ]
+    install_requires = [ ],
+    test_suite = 'nose.collector',
+    tests_require = ['nose'],
+    entry_points={
+        'console_scripts': [
+            'pyTrivialCache = pyTrivialCache.__main__:main'
+            ]
+        },
 )
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
