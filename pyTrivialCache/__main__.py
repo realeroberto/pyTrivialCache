@@ -26,6 +26,7 @@
 import getopt
 import sys
 
+from pyTrivialCache import pyTrivialCacheShell
 
 
 def short_usage():
