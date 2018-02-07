@@ -41,7 +41,7 @@ The poor man's API for manipulating a file system cache.
       --help                       display this help and exit
   -n, --name          NAME         name of the cache
   -b, --basedir       BASEDIR      base directory of the cache
-  -p, --pattern       PATTERN      apply a patter match"""
+  -p, --pattern       PATTERN      apply a pattern match"""
 
 
 def main(argv=None):
