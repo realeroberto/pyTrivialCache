@@ -40,3 +40,37 @@ As a standalone script:
 
         (pyTrivialCache:ZILAYMHG) quit
         Disconnected from ZILAYMHG.
+
+As a module:
+
+        $ cd /tmp
+        $ touch a b c
+
+        from pyTrivialCache import pyTrivialCache
+        import tempfile
+
+        basedir = tempfile.mkdtemp()
+        cache = pyTrivialCache(basedir)
+
+        cache.traverse()
+        > []
+
+        cache.push('a')
+        > Pushing a unto PVAK4UE0.
+        cache.push('b')
+        > Pushing b unto PVAK4UE0.
+        cache.push('c')
+        > Pushing c unto PVAK4UE0.
+        cache.traverse()
+        > ['a', 'b', 'c']
+
+        cache.unpush('c')
+        > Unpushing c from PVAK4UE0.
+        cache.traverse()
+        > ['a', 'b']
+
+        cache.purge()
+        > Unpushing a from PVAK4UE0.
+        > Unpushing b from PVAK4UE0.
+        cache.traverse()
+        > []
