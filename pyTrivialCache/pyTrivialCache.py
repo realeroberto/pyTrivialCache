@@ -63,13 +63,14 @@ class pyTrivialCache(object):
                 self.log(10, "Already connected to %s." % self.name)
 
     def unlock(self):
-        try:
-            os.rmdir(self.lock_dir)
-            self.connected = False
-            self.log(20, "Disconnected from %s." % self.name)
-        except:
-            self.log(30, "Cannot release lock on %s." % self.name)
-            raise
+        if os.path.exists(self.lock_dir):
+            try:
+                os.rmdir(self.lock_dir)
+                self.connected = False
+                self.log(20, "Disconnected from %s." % self.name)
+            except:
+                self.log(30, "Cannot release lock on %s." % self.name)
+                raise
 
     def _filename2path(self, filename):
         match = self.pattern_compiled.match(filename)
